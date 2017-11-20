@@ -195,7 +195,7 @@ to $a_t \sim \pi(a_t | s_t; \theta)$. Immediately, we run into a problem
 with backpropagation – how do we backpropagate through the expectation?
 
 The answer is in the classic paper (cite), also known as REINFORCE, the
-score function estimator, or the likelihood ratio estimator.[^1]. Let
+score function estimator, or the likelihood ratio estimator.[^1] Let
 the quantity in the expectation be $f(s_t, a_t)$, so that if we write
 out the expectation over the $a_t$ in full:
 
