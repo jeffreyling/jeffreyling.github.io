@@ -192,7 +192,8 @@ $\pi(\cdot; \theta) : \mcS \to \mcA$, so that we draw actions according
 to $a_t \sim \pi(a_t | s_t; \theta)$. Immediately, we run into a problem
 with backpropagation – how do we backpropagate through the expectation?
 
-The answer is in the classic paper (cite), also known as REINFORCE, the
+The answer is in the classic paper Williams
+([1992](#ref-williams1992reinforce)), also known as REINFORCE, the
 score function estimator, or the likelihood ratio estimator.[^1] Let
 the quantity in the expectation be $f(s_t, a_t)$, so that if we write
 out the expectation over the $a_t$ in full:
@@ -335,16 +336,16 @@ cases it may not be suitable for the problem.
 The reason I wrote this blog post is that the ideas of REINFORCE and
 stochastic computation graphs are very general, yet it’s hard to see the
 connections between the instantiations if you don’t already know about
-it. While there’s a ton of topics specific to the many works that I
-haven’t covered, I hope this blog post helps you understand the key
-connections.
+it. While there are a ton of other topics outside the scope of this post,
+I hope this blog post helps you start making the key connections!
 
 # References
 
-* <a id="ref-mnih2014visualattention"></a> Mnih, Volodymyr, Nicolas Heess, Alex Graves, and koray Kavukcuoglu. 2014. “Recurrent models of visual attention.” *Advances in Neural Information Processing Systems*, 2204—2212.
+* <a id="ref-mnih2014visualattention"></a> Mnih, Volodymyr, Nicolas Heess, Alex Graves, and Koray Kavukcuoglu. 2014. “Recurrent models of visual attention.” *Advances in Neural Information Processing Systems*, 2204—2212.
 * <a id="ref-deepatari2015"></a> Mnih, Volodymyr, Koray Kavukcuoglu, David Silver, Andrei a Rusu, Joel Veness, Marc G Bellemare, Alex Graves, et al. 2015. “Human-level control through deep reinforcement learning.” *Nature* 518 (7540): 529–33.
 * <a id="ref-ranganath2014"></a> Ranganath, Rajesh, Sean Gerrish, and David M Blei. 2014. “Black Box Variational Inference.” *AISTATS* 33.
 * <a id="ref-schulman2015backprop"></a> Schulman, John, Nicolas Heess, Theophane Weber, and Pieter Abbeel. 2015. “Gradient Estimation Using Stochastic Computation Graphs.” *NIPS*, 1–13.
+* <a id="ref-williams1992reinforce"></a> Williams, Ronald J. 1992. “Simple statistical gradient-following algorithms for connectionist reinforcement learning.” *Machine Learning* 8 (3-4). Springer: 229–56.
 * <a id="ref-xu2015captioning"></a> Xu, Kelvin, Jimmy Ba, Ryan Kiros, Kyunghyun Cho, Aaron C Courville, Ruslan Salakhutdinov, Richard S Zemel, and Yoshua Bengio. 2015. “Show, Attend and Tell: Neural Image Caption Generation with Visual Attention.” *ICML* 14: 77—81.
 
 [^1]: If you try to read the original paper, it probably won’t make a
