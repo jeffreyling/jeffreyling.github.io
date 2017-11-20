@@ -4,17 +4,16 @@
 
 @import "minima";
 
-h1, h2, h3, h4, h5, h6 {
+h1 {
     font-weight: bold;
 }
 
 /* Numbered sections */
+/*.post-content {*/
+    /*counter-reset: h1*/
+/*}*/
 
-.post-content {
-    counter-reset: h1
-}
-
-.post-content h1:before {
-    counter-increment: h1;
-    content: counter(h1) ". "
-}
+/*.post-content h1:before {*/
+    /*counter-increment: h1;*/
+    /*content: counter(h1) ". "*/
+/*}*/

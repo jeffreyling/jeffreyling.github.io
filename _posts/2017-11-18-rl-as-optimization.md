@@ -163,8 +163,6 @@ update is very well motivated.
 Tie-in to Deep Learning
 =======================
 
-#### Q-learning
-
 In our Q-learning loss, there is nothing that says we have to
 parametrize it as a table of values $\theta_{s,a} = Q(s,a)$. We can
 instead use a neural network $Q(s,a; \theta)$ where $\theta$ are
