@@ -80,11 +80,11 @@ $$
 \newcommand{\mcY}{\mathcal{Y}}
 \newcommand{\mcZ}{\mathcal{Z}}
 
-\newcommand{\reals}{\mathbb{R}}}
+\newcommand{\reals}{\mathbb{R}}
 \newcommand{\integers}{\mathbb{Z}}
 \newcommand{\rationals}{\mathbb{Q}}
 \newcommand{\naturals}{\mathbb{N}}
-\newcommand{\trans}{\mathsf{T}}
+
 \newcommand{\ident}{\boldsymbol{I}}
 \newcommand{\bzero}{\boldsymbol{0}}
 
@@ -113,10 +113,8 @@ $$
 \newcommand{\bXi}{\boldsymbol{\Xi}}
 \newcommand{\bepsilon}{\boldsymbol{\epsilon}}
 
-\newcommand{\given}{\,|\,}
-\newcommand{\distNorm}{\mathcal{N}}
 \newcommand{\on}{\operatorname}
-
-\newcommand{\argmax}{\operatorname{argmax}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\Var}{\on{Var}}
 $$
 </div>
