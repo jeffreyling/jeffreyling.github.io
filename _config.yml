@@ -17,7 +17,7 @@ title: Jeffrey Ling
 author: Jeffrey Ling
 email: jeffrey.r.ling [at] gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  A simple blog, also practice space for writing
+  Jeffrey's personal website
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: spdling
