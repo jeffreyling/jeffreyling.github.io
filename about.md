@@ -4,10 +4,12 @@ title: About
 permalink: /about/
 ---
 
-I”m currently an AI resident at Google in NYC, where I’ve been working on research in natural language processing with a focus on entities and relations. Previously I worked at [Vicarious](https://vicarious.com) on computer vision and robotics. I graduated from Harvard in 2017 with a BA in computer science and math, where I was advised by Prof. Alexander Rush of the [Harvard NLP](http://nlp.seas.harvard.edu/) group.
+I'm currently working on a startup. Stay tuned!
 
-I’m interested in building large-scale systems for language understanding as well as grounding text to different modalities.
+Until recently I worked at Waymo's Planner ML team where I researched and deployed ML models for driving cars. Before that, I was an AI resident at Google NYC, where I worked on natural language processing and BERT research. And before that, I worked at [Vicarious](https://vicarious.com) on computer vision and robotics. I graduated from Harvard in 2017 with a BA in computer science and math, where I was worked with Prof. Alexander Rush of the [Harvard NLP](https://nlp.seas.harvard.edu/) group.
 
 I am originally from Palo Alto, CA.
 
-You can find my resume [here](/assets/jeffreyling.pdf).
+See my [Google Scholar](https://scholar.google.com/citations?user=pfKbmL4AAAAJ&hl=en) for publications. You can find my resume [here](/assets/jeffreyling.pdf).
+
+Please reach out if you want to talk about ML or anything else!
