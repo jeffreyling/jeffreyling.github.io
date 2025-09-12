@@ -1,0 +1,11 @@
+_site
+.sass-cache
+.jekyll-metadata
+
+.sw[op]
+
+# Mac OS X
+.DS_Store
+
+etc/
+_drafts/
