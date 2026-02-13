@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reinforcement Learning as Optimization - Jeffrey Ling</title>
+  <link rel="stylesheet" href="../style.css">
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      TeX: { equationNumbers: { autoNumber: "AMS" } },
+      tex2jax: {
+        inlineMath: [ ['$','$'] ],
+        displayMath: [ ['$$','$$'] ],
+        processEscapes: true,
+      }
+    });
+  </script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+  <header class="top-nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <svg height="32" viewBox="0 0 16 16" width="32" fill="#fff">
+          <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+        </svg>
+      </a>
+      <nav class="nav-links">
+        <a href="../index.html">Overview</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="profile-container">
+    <section class="profile-content" style="max-width: 900px; margin: 0 auto;">
+      <a href="../blog.html" class="back-link">&larr; Back to blog</a>
+      <article class="post-article">
+        <header class="post-header">
+          <h1>Reinforcement Learning as Optimization</h1>
+          <div class="post-meta">Nov 18, 2017</div>
+        </header>
+        <div class="post-body">
+          <p>When I first learned about deep reinforcement learning, I was extremely
+confused how RL could fit in with deep learning – the two topics seem
+totally different, at least in the ways they’re presented! The trick is
+to understand that RL is simply optimizing a particular loss function,
+and we can thus view it in the context of optimization and make a direct
+comparison to supervised learning. In this post, we will show how the
+REINFORCE algorithm, used commonly in reinforcement learning, is
+actually a very general idea.</p>
+<h1>Classical Reinforcement Learning</h1>
+<p>First, a quick primer on reinforcement learning.</p>
+<p>The classical setup of reinforcement learning is that we have an agent
+who lives in an environment with states $\mcS$ and can make actions
+$\mcA$ which causes them to transition to a new state. Depending on the
+state and action pair, they then receive some reward $r \in \reals$.</p>
+<p>We can formalize these ideas with Markov decision processes (MDPs). An
+MDP has the following parameters:</p>
+<ul>
+<li>
+<p>time horizon $T$, which could be infinite</p>
+</li>
+<li>
+<p>action space $\mcA$</p>
+</li>
+<li>
+<p>state space $\mcS$</p>
+</li>
+<li>
+<p>transition distribution $p(s' | s, a)$ for all
+    $s,s' \in \mcS, a \in \mcA$ (this is the Markov ingredient)</p>
+</li>
+<li>
+<p>reward function $r : \mcS \times \mcA \to \reals$ for a given state
+    and action pair (possibly stochastic)</p>
+</li>
+<li>
+<p>time discount factor $\gamma \in (0,1)$</p>
+</li>
+</ul>
+<p>Suppose we index time with $t = 0, 1, 2, \ldots, T$. The agent starts in
+state $s_0$. At time $t$, the agent is in state $s_t$ and decides to
+make action $a_t$, receiving reward $r_t = r(s_t, a_t)$. The agent wants
+to maximize their total expected discounted reward</p>
+<p>$$\mathbb{E}<em>{s_t, a_t, r_t} \left[ \sum</em>{t=0}^T \gamma^t r_t \right]$$</p>
+<p>where the expectation is over all sampled <em>trajectories</em>
+$s_0, a_0, s_1, a_1, \ldots, s_T, a_T$. To be clear
+$s_{t+1} \sim p(s_{t+1}|s_t, a_t)$ throughout the trajectory, and
+$r_t \sim r(s_t, a_t)$.</p>
+<p>We have here an objective we want to optimize! We’ll revisit this in the
+deep learning context, but first we take a look at how we solve it
+traditionally.</p>
+<h1>Solving the MDP</h1>
+<p>To solve the MDP, the agent has a policy function $\pi : \mcS \to \mcA$
+that selects the action to make in a given state (possibly stochastic).</p>
+<p>In general, we assume that the agent doesn’t know the reward function
+$r(s,a)$ or the transition distribution $p(s' | s,a)$ – if they did,
+solving the MDP would be possible through dynamic programming methods.
+The agent can try to estimate the reward function and transition
+distribution – this is known as <em>model-based</em> reinforcement learning,
+aptly named since we try to guess the MDP model of the environment.</p>
+<p>We instead cover <em>model-free</em> RL where we estimate $\pi$ directly.
+Therefore, the <strong>overall strategy</strong> to learn the function
+$\pi : \mcS \to \mcA$ will be: by testing out values of $a$ to see what
+rewards we get (exploration step), and once we’ve collected enough
+evidence, pick the best action $a$ for each step (exploitation).</p>
+<h1>Estimating the Policy and Q-learning</h1>
+<p>Note that we have a lot of freedom in our learning strategy.</p>
+<ol>
+<li>
+<p>How do we keep track of our exploration (do we need to save all of
+    our sample trajectories)?</p>
+</li>
+<li>
+<p>How are we going to do exploration (do we make actions completely
+    randomly)?</p>
+</li>
+</ol>
+<p>Some preliminary answers:</p>
+<ol>
+<li>
+<p>Short answer: no. Instead of saving our entire sample trajectory, it
+    suffices to have training data in the form $(s, a, r, s')$ – this is
+    because our transition distribution is Markovian, and the reward $r$
+    and next state $s'$ only depends on $s, a$ (not whatever
+    came before).</p>
+</li>
+<li>
+<p>There are several exploration strategies, the most common of which
+    is $\epsilon$-greedy, where we pick an action uniformly at random
+    with probability $\epsilon$ and pick our current best estimate
+    action with probability $1-\epsilon$.</p>
+<p>Another is to make actions in proportion to states we already think
+are “good” - i.e. if we got a lot of reward from a certain action
+$a_0$, we are more likely to do $a_0$ (but still do other actions
+with some probability!).</p>
+</li>
+</ol>
+<p>To effectively learn a policy, we can use the trajectory data to
+estimate either a value function $V(s)$ or a Q-function $Q(s,a)$ to
+summarize our data. $V(s)$ estimates the best total reward we can get if
+we start from state $s$ and act optimally; $Q(s,a)$ tracks the same if
+we start with action $a$ in state $s$.</p>
+<p>Note the direct relation $V(s) = \arg\max_a Q(s,a)$. Also, in optimality
+we have</p>
+<p>$$V^<em>(s) = \max_{a \in \mcA} r(s,a) + \gamma \mathbb{E}_{s' \sim p(s'|s,a)} [V^</em>(s')]$$</p>
+<p>$$Q^*(s,a) = r(s,a) + \gamma \mathbb{E}<em>{s' \sim p(s'|s,a)} \left[ \max</em>{a' \in \mcA} Q(s', a') \right]$$</p>
+<p>by recursively defining $V^*$ and $Q^*$ as optimal. These relations are
+known as the <strong>Bellman equations</strong>, and they are necessary and
+sufficient for optimality.</p>
+<p>If we can learn either of these, note the optimal policy will be
+$\pi(s) = \arg\max_{a \in\mcA} Q(s,a)$ or also
+$\pi(s) = \arg\max_{a \in \mcA} r + \gamma \mathbb{E}_{s' \sim p(s' | s, a)}[ V(s') ]$.</p>
+<h4>Q-learning</h4>
+<p>One of the standard techniques for reinforcement learning is Q-learning.
+We initialize our table of $Q(s,a)$ values to 0, so that our parameters
+are $\theta_{s,a} = Q(s,a)$. If we’re in state $s$, make action $a$, and
+get reward $r$, we make the update</p>
+<p>$$Q(s,a) \gets Q(s,a) + \alpha \left(r + \gamma \max_{a' \in \mcA} Q(s', a') - Q(s,a) \right)$$</p>
+<p>where $\alpha$ is a learning rate.</p>
+<p>The astute reader will realize that this update rule is actually
+gradient descent on some kind of least squares objective! Specifically,
+the loss is</p>
+<p>$$\mcL = \mathbb{E}<em>{s,a}\left[ \left( Q(s,a) - (r(s,a) + \gamma \mathbb{E}</em>{s' \sim p(s'|s,a)}[ \max_{a'} Q(s', a') ]) \right)^2 \right]$$</p>
+<p>At optimality, we have that</p>
+<p>$$Q(s,a) \equiv r + \gamma \mathbb{E}<em>{s' \sim p(s'|s,a)} \max</em>{a'} Q(s', a')$$</p>
+<p>which is exactly the Bellman condition! In Q-learning, we try to satisfy
+the Bellman condition through optimizing $\mcL$ by sampling
+$s' \sim p(s' | s,a)$ and performing gradient ascent on the parameters
+$\theta_{s,a} = Q(s,a)$. Our gradients are, to be clear,</p>
+<p>$$\frac{\partial \mcL}{\partial \theta_{s,a}} := r + \gamma \max_{a' \in \mcA} Q(s', a') - Q(s,a)$$</p>
+<p>which come from differentiating $\mcL$ and sampling. Thus our Q-learning
+update is very well motivated.</p>
+<h1>Tie-in to Deep Learning</h1>
+<p>In our Q-learning loss, there is nothing that says we have to
+parametrize it as a table of values $\theta_{s,a} = Q(s,a)$. We can
+instead use a neural network $Q(s,a; \theta)$ where $\theta$ are
+parameters of some arbitrary net (could have convolutions, MLPs, etc.).
+Then, using training tuples $(s, a, r, s')$, we can do backpropagation
+in the usual way to get gradients $\partial \mcL / \partial \theta$.
+Specifically, the gradients come out to be</p>
+<p>$$\frac{\partial \mcL}{\partial \theta} := (r + \gamma \max_{a' \in \mcA} Q(s', a') - Q(s,a)) \frac{\partial Q(s, a; \theta)}{\partial \theta}$$</p>
+<p>That’s all there is to deep Q-learning! You have flexibility to choose
+how to encode your $s,a$ pair, as well as come up with all kinds of
+learning schedules, but the core idea is there. You can read about how
+(Mnih et al. <a href="#ref-deepatari2015">2015</a>) use this technique to play
+Atari games from pixels.</p>
+<h1>Policy Gradient</h1>
+<p>Instead of learning a proxy Q-function, we can try to solve the MDP
+directly. Let’s revisit the objective we want to optimize:</p>
+<p>$$\mcL = \mathbb{E}<em>{s_t, a_t} \left[ \sum</em>{t=0}^T \gamma^t r_t(s_t, a_t) \right]$$</p>
+<p>Now, we assume our policy is a parameterized stochastic map
+$\pi(\cdot; \theta) : \mcS \to \mcA$, so that we draw actions according
+to $a_t \sim \pi(a_t | s_t; \theta)$. Immediately, we run into a problem
+with backpropagation – how do we backpropagate through the expectation?</p>
+<p>The answer is in the classic paper Williams
+(<a href="#ref-williams1992reinforce">1992</a>), also known as REINFORCE, the
+score function estimator, or the likelihood ratio estimator.<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> Let
+the quantity in the expectation be $f(s_t, a_t)$, so that if we write
+out the expectation over the $a_t$ in full:</p>
+<p>$$\mcL = \sum_t \gamma^t \mathbb{E}<em>{s</em>{t+1} \sim p(s_{t+1} | s_t, a_t)} \sum_{a_t} \pi(a_t | s_t; \theta) r(s_t, a_t)$$</p>
+<p>Now we take the gradient with respect to $\theta$:</p>
+<p>$$\begin{aligned}
+\frac{\partial\mcL}{\partial \theta} &amp;= \sum_t \gamma^t \mathbb{E}<em>{s</em>{t+1} \sim p(s_{t+1} | s_t, a_t)} \sum_{a_t} \frac{\partial}{\partial \theta} ( \pi(a_t | s_t; \theta) r(s_t, a_t))  \
+&amp;= \sum_t \gamma^t \mathbb{E}<em>{s</em>{t+1} \sim p(s_{t+1} | s_t, a_t)} \sum_{a_t} \frac{\partial \pi(a_t | s_t; \theta)}{\partial \theta} r(s_t, a_t) \
+&amp;= \sum_t \gamma^t \mathbb{E}<em>{s</em>{t+1} \sim p(s_{t+1} | s_t, a_t)} \sum_{a_t} \frac{\partial \pi(a_t | s_t; \theta)}{\partial \theta} \frac{\pi(a_t | s_t; \theta)}{\pi(a_t | s_t; \theta)} r(s_t, a_t) \
+&amp;= \sum_t \gamma^t \mathbb{E}<em>{s</em>{t+1} \sim p(s_{t+1} | s_t, a_t)} \sum_{a_t} \pi(a_t | s_t; \theta) \frac{\partial \log \pi(a_t | s_t; \theta)}{\partial \theta} r(s_t, a_t) \
+&amp;= \sum_t \gamma^t \mathbb{E}<em>{s</em>{t+1} \sim p(s_{t+1} | s_t, a_t),\, a_t \sim \pi(a_t | s_t; \theta)} \frac{\partial \log \pi(a_t | s_t; \theta)}{\partial \theta} r(s_t, a_t) \
+&amp;=\mathbb{E}<em>{s</em>{t+1} \sim p(s_{t+1} | s_t, a_t),\, a_t \sim \pi(a_t | s_t; \theta)}\left[  \sum_t \gamma^t  \frac{\partial \log \pi(a_t | s_t; \theta)}{\partial \theta} r(s_t, a_t) \right]\end{aligned}$$</p>
+<p>Notice our trick: we used the fact that
+$\frac{\partial \log y}{ \partial x } = \frac{\partial y}{\partial x} \frac{1}{y}$.
+This allows us to efficiently sample our actions $a_t$ to calculate the
+expectation instead of needing to compute a (potentially big) sum over
+$a_t$.</p>
+<p>Some intution: there is no longer any <em>direct</em> gradient flow backwards
+to our parameters. Instead, we need to obtain samples and compute
+$\partial \log \pi(a_t | s_t; \theta) / \partial \theta$ and
+$r(s_t, a_t)$ – here the signal will come from the reward in
+$r(s_t, a_t)$. Good actions $a$ will lead to high reward, leading to a
+bigger gradient and increasing the probability $\pi(a)$. Conversely, bad
+actions with negative reward will lead to a negative gradient,
+decreasing the probability of $\pi(a)$.</p>
+<p>The gradients we compute here are known as <em>policy gradients</em> – a
+fitting name since we differentiate the log probability of the policy.</p>
+<h4>Aside on control variates</h4>
+<p>The gradient we just computed is unbiased – sampling has the right
+expectation. In practice, people will sample one trajectory to get a
+gradient, but this will cause the variance to be very high. There is a
+trick to get around this, known as the <em>likelihood ratio trick</em>.</p>
+<p>Simply, if we want to get samples for
+$\mathbb{E}_{a_t \sim \pi(a_t | s_t; \theta)} \left[ \frac{\partial \log \pi(a_t | s_t; \theta)}{\partial \theta} r(s_t, a_t) \right]$,
+this turns out to be equal to</p>
+<p>$$\mathbb{E}_{a_t \sim \pi(a_t | s_t; \theta)} \left[ \frac{\partial \log \pi(a_t | s_t; \theta)}{\partial \theta} (r(s_t, a_t) - b) \right]$$</p>
+<p>for any $b$ constant with respect to $a_t$. This is because</p>
+<p>$$\begin{aligned}
+\mathbb{E}<em>{a_t} \left[ \frac{\partial\log \pi(a_t | s_t; \theta)}{\partial \theta} b \right] &amp;= b \sum</em>{a_t} \frac{\partial\log \pi(a_t | s_t; \theta)}{\partial \theta} \pi(a_t  | s_t; \theta)  \
+&amp;= b\sum_{a_t} \frac{\partial \pi(a_t | s_t; \theta)}{\partial \theta} \frac{\pi(a_t  | s_t; \theta)}{\pi(a_t | s_t; \theta)} \
+&amp;= b\sum_{a_t} \frac{\partial \pi(a_t | s_t; \theta)}{\partial \theta} \
+&amp;= b\frac{\partial}{\partial\theta} \sum_{a_t} \pi(a_t | s_t; \theta)  = b\frac{\partial}{\partial\theta} 1 = 0\\end{aligned}$$</p>
+<p>So we can freely pick $b$ such that the estimate has the lowest variance - finding the optimal $b$ is outside the scope of this post. However, we
+can interpret what $b$ is: instead of our reward $r(s_t, a_t)$ we have
+$r(s_t, a_t) - b$, so we can think of $b$ as a baseline reward. In fact,
+if we write $b := V(s_t)$ then we can interpret $r(s_t, a_t) - V(s_t)$
+as an “advantage function”, i.e. the advantage of choosing $a_t$ in
+state $s_t$.</p>
+<h1>Stochastic Computation Graphs</h1>
+<p>In the RL setup we made our action stochastic and using REINFORCE were
+able to backpropagate gradients to the action distribution
+$\pi(a_t | s_t; \theta)$. In fact, this technique is very general: in a
+neural network setting, it means that if we have stochastic nodes that
+are sampled from parameterized distributions, we can compute gradients
+without the differentiability condition!</p>
+<p>The paper, (Schulman et al. <a href="#ref-schulman2015backprop">2015</a>), neatly
+explains how all of this fits together using stochastic computation
+graphs.</p>
+<p>Basically, a stochastic computation graph is any graph that has nodes
+with random variables in addition to deterministic nodes, and the loss
+function is defined as the sum of some endpoint nodes. There will then
+be three kinds of parameters:</p>
+<ol>
+<li>
+<p>parameters that come after stochastic nodes, with direct
+    deterministic paths to the loss</p>
+</li>
+<li>
+<p>parameters that precede stochastic nodes, which can’t be directly
+    differentiated for the loss,</p>
+</li>
+<li>
+<p>parameters that have both direct paths to the loss, as well as paths
+    that go through stochastic nodes</p>
+</li>
+</ol>
+<p>For the first kind, parameters that have direct paths to the loss, we
+can compute the gradients with backpropagation as usual.</p>
+<p>We turn to REINFORCE for the second kind to get gradients that precede
+the stochastic nodes. Recall that in reinforcement learning, our policy
+gradient had two main components, the reward $r(s_t, a_t)$ and the
+log-probability gradient
+$\frac{\partial \log \pi(a_t | s_t; \theta) }{ \partial \theta}$. In a
+general stochastic computation graph, the reward is replaced by the sum
+of all losses influenced downstream of our stochastic sample – this
+makes sense since only those should provide training signal for our
+probability distribution.</p>
+<p>For the third kind, we can sum up the gradients from each path due to
+linearity of gradients.</p>
+<p>To make this concrete, here are some examples (from the original paper):</p>
+<p><img alt="image" src="../images/scgs.png" /></p>
+<p>where circles are stochastic nodes, squares are deterministic nodes.
+Notice how the stochastic nodes all result in gradients of the form
+$\frac{\partial}{\partial \theta} \log p( - | \theta)$ times the sum of
+downstream losses.</p>
+<p>It turns out that stochastic computation graphs are everywhere! This
+idea has a lot of instantiations – hard attention models (Mnih et al.
+<a href="#ref-mnih2014visualattention">2014</a>; Xu et al.
+<a href="#ref-xu2015captioning">2015</a>), black box variational inference (BBVI)
+(Ranganath, Gerrish, and Blei <a href="#ref-ranganath2014">2014</a>), and of course
+policy gradients all use REINFORCE to backpropagate through stochastic
+components of their model. We can therefore differentiate stochastic
+functions as complicated as we like, as long as we have a loss function
+to optimize, and REINFORCE + backpropagation takes care of the rest.</p>
+<h1>Conclusion</h1>
+<p>Armed with our new understanding of RL, we can ask the following
+question: why is it harder than supervised learning? The key difference
+is in the stochasticity: because our signal comes from a sampled scalar
+reward, it’s hard to tell which action led directly to a better outcome.
+In networks where there is further computation after the stochastic
+decision (such as hard attention models), this problem is exacerbated.
+Contrast this with supervised learning, where the signal is
+backpropagated directly through the entire differentiable network.
+Therefore, although the REINFORCE method is very general, in certain
+cases it may not be suitable for the problem.</p>
+<p>The reason I wrote this blog post is that the ideas of REINFORCE and
+stochastic computation graphs are very general, yet it’s hard to see the
+connections between the instantiations if you don’t already know about
+it. While there are a ton of other topics outside the scope of this post,
+I hope this blog post helps you start making the key connections!</p>
+<h1>References</h1>
+<ul>
+<li><a id="ref-mnih2014visualattention"></a> Mnih, Volodymyr, Nicolas Heess, Alex Graves, and Koray Kavukcuoglu. 2014. “Recurrent models of visual attention.” <em>Advances in Neural Information Processing Systems</em>, 2204—2212.</li>
+<li><a id="ref-deepatari2015"></a> Mnih, Volodymyr, Koray Kavukcuoglu, David Silver, Andrei a Rusu, Joel Veness, Marc G Bellemare, Alex Graves, et al. 2015. “Human-level control through deep reinforcement learning.” <em>Nature</em> 518 (7540): 529–33.</li>
+<li><a id="ref-ranganath2014"></a> Ranganath, Rajesh, Sean Gerrish, and David M Blei. 2014. “Black Box Variational Inference.” <em>AISTATS</em> 33.</li>
+<li><a id="ref-schulman2015backprop"></a> Schulman, John, Nicolas Heess, Theophane Weber, and Pieter Abbeel. 2015. “Gradient Estimation Using Stochastic Computation Graphs.” <em>NIPS</em>, 1–13.</li>
+<li><a id="ref-williams1992reinforce"></a> Williams, Ronald J. 1992. “Simple statistical gradient-following algorithms for connectionist reinforcement learning.” <em>Machine Learning</em> 8 (3-4). Springer: 229–56.</li>
+<li><a id="ref-xu2015captioning"></a> Xu, Kelvin, Jimmy Ba, Ryan Kiros, Kyunghyun Cho, Aaron C Courville, Ruslan Salakhutdinov, Richard S Zemel, and Yoshua Bengio. 2015. “Show, Attend and Tell: Neural Image Caption Generation with Visual Attention.” <em>ICML</em> 14: 77—81.</li>
+</ul>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>If you try to read the original paper, it probably won’t make a
+lot of sense to you, since the language it uses is outdated and
+radically different from the current way we talk about things.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 Jeffrey Ling</span>
+    </div>
+  </footer>
+</body>
+</html>

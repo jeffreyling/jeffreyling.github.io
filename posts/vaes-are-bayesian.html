@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAEs are Bayesian - Jeffrey Ling</title>
+  <link rel="stylesheet" href="../style.css">
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      TeX: { equationNumbers: { autoNumber: "AMS" } },
+      tex2jax: {
+        inlineMath: [ ['$','$'] ],
+        displayMath: [ ['$$','$$'] ],
+        processEscapes: true,
+      }
+    });
+  </script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+  <header class="top-nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <svg height="32" viewBox="0 0 16 16" width="32" fill="#fff">
+          <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+        </svg>
+      </a>
+      <nav class="nav-links">
+        <a href="../index.html">Overview</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="profile-container">
+    <section class="profile-content" style="max-width: 900px; margin: 0 auto;">
+      <a href="../blog.html" class="back-link">&larr; Back to blog</a>
+      <article class="post-article">
+        <header class="post-header">
+          <h1>VAEs are Bayesian</h1>
+          <div class="post-meta">Jan 9, 2018</div>
+        </header>
+        <div class="post-body">
+          <p>Variational autoencoders (VAEs) have become an extremely popular generative model
+in deep learning. While VAE outputs don't achieve the same level of prettiness that 
+GANs do, they are theoretically well-motivated by probability theory and Bayes'
+rule.</p>
+<p>However, when deep learning papers discuss VAEs, they totally ignore the Bayesian
+framework and emphasize the <strong>encoder-decoder</strong> architecture, despite the fact that
+the original paper (Kingma 2013) was literally called "Stochastic Gradient
+Variational Bayes".</p>
+<p>In this post, we'll highlight the differences between the deep learning and
+Bayesian interpretations.</p>
+<h1>Background</h1>
+<p>First, a review of VAEs. We have some data $x_1, \ldots, x_n$ that we want to
+model with a generative process. We assume a latent variable $z_i$ for each $x_i$,
+and a joint probability distribution $p(x, z) = p(x|z)p(z)$ that the data come from.</p>
+<p>In deep learning, we usually assume that $p(z)$ is some simple distribution, e.g.
+a standard multivariate Gaussian $\mcN(0,1)$, and that $p(x|z)$ comes from a
+complicated neural network, $x = f_\theta(z)$ (this will be the <strong>decoder</strong>). To
+generate a data sample, all we need to do is get a Gaussian sample $z$ (easy) and
+apply $f_\theta(z)$ to get $x$.</p>
+<p>In some sense, $z$ is a <strong>code</strong> for $x$, so motivated by autoencoders, we want a
+function $g_\phi$ (the <strong>encoder</strong>, also a neural network with parameters $\phi$)
+that encodes $x$. Since we're working with probabilities here, instead of mapping
+to a single $z$, we map to a distribution - in this case, we'll assume another
+Gaussian $\mcN(\mu, \sigma^2)$ is the "posterior" distribution on $z$. Now, if we
+ever want to know the latent code for a data point $x$, we get $\mu, \sigma =
+g_\phi(x)$, and take samples $z \sim \mcN(\mu, \sigma^2)$. We can think of
+$g_\phi$ as representing the approximate posterior distribution $q(z|x)$.</p>
+<p>To train the generative model (i.e. get $\theta$), we maximize the data log-likelihood $\log p(x)$. It turns out that doing this directly is hard, but by Jensen's inequality, we can get a useful lower bound:</p>
+<p>$$
+\begin{align<em>}
+\log p(x) &amp;\geq \E_{z \sim q_\phi(z|x)} [ \log p(x, z) - \log q_\phi(z|x) ] \
+ &amp;= \E_{z \sim q}[\log p_\theta(x|z)] - KL(q_\phi(z|x) || p(z))
+\end{align</em>}
+$$</p>
+<p>This expression is known as the evidence lower bound (ELBO), and will be our loss function $\mcL_{ELBO}$ to optimize. Specifically, we will be doing gradient descent on both $\phi$ and $\theta$, the encoder and decoder respectively, to obtain our generative model. (Expectations are generally estimated via one Monte Carlo sample, or closed form if available.<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>)</p>
+<p><img alt="VAE computation graph" src="../assets/vae_graph.png" /></p>
+<p>As in the above picture (from <a href="https://arxiv.org/abs/1606.05908">this great tutorial</a>),
+here is how the deep learning computation graph unfolds: given $x$, we encode
+$\mu, \sigma = g_\phi(x)$, then take a sample $z \sim q(z|x) = \mcN(\mu, \sigma^2)$
+(the sample handles the $\E_q$ in the first term of the ELBO). Then, we decode
+$x = f_\theta(z)$ so that we can compute $\log p_\theta(x|z)$ for our loss.</p>
+<h1>The deep learning perspective</h1>
+<p>From a deep learning point of view, we have set up an <strong>autoencoder</strong>. We map our $x$ to a latent space of $z$ (encoding), then map it back out to the data space (decoding).</p>
+<p>Let's break down the ELBO objective. We wish to maximize a sum of two terms:
+1. First is $\E_{z \sim q}[\log p_\theta(x|z)]$, commonly known as the
+reconstruction error. By encoding $x$ to the latent space, sampling a $z$, then
+decoding back to $x'$ in the expectation, we can see how good our reconstruction is.
+Of course, we want our reconstructed $x'$ to be as close to our input $x$ as possible.
+2. The second term is the negative KL divergence, which computes a sense of distance
+from our encoding distribution $q_\phi(z|x)$ to $p(z)$. If we only had the first
+term, the encoding process could be pretty much arbitrary, but this term helps us
+"regularize" towards some simple distribution $p(z)$ by minimizing the KL. Of
+course, we don't want it to collapse to 0, otherwise our encoding $q(z|x)$ is
+meaningless and fails to capture anything informative about our data $x$. </p>
+<p>From this perspective, we see that variational autoencoders are like an upgrade of standard autoencoders, which seek to minimize reconstruction loss upon encoding and decoding.</p>
+<h1>The Bayesian perspective</h1>
+<p>We saw where the "autoencoder" part of VAE comes from. But what about the "variational" part? Let's rephrase everything we've covered so far in the language of Bayes.</p>
+<p>In Bayesian learning, if we have observed variables $x$ and latent $z$, obtaining
+the posterior $p(z|x)$ is often hard. One method is <strong>variational inference</strong>, where
+we approximate the posterior $p(z|x)$ from a family of well-behaved distributions
+$q(z|x)$. Variational inference seeks to minimize the KL divergence
+$KL(q(z|x) || p(z|x))$ of our guess $q$ from the true posterior.</p>
+<p>VAEs are really doing variational inference. Let's see how:</p>
+<ul>
+<li>$p(z)$ is the prior. In our case, this is a simple Gaussian.</li>
+<li>$p(x|z)$ is the likelihood. In our case, this is implicitly defined by a
+complicated neural network.</li>
+<li>$p(z|x)$ is the true posterior that we don't know.                 </li>
+<li>$q(z|x)$ is the variational posterior, also defined a complicated neural network.  We usually call this the <strong>inference network</strong>.</li>
+</ul>
+<p>In typical variational inference, both the likelihood $p(x|z)$ and variational
+posterior $q$ come from simple exponential families, so that we can derive closed
+form expressions for the parameters. In VAEs, however, both the likelihood and
+inference net are intractable (defined by neural networks). Fortunately, we can
+get around this issue with stochastic gradient descent on the ELBO.</p>
+<p>Therefore, in a Bayesian sense, VAEs are using variational inference to handle our
+complicated generative model. The way we do inference on $z$ <em>happens</em> to be by
+using a neural network, since inference with a neural likelihood is intractable.
+Note that this interpretation gives us some flexibility: we can change up our prior
+$p(z)$, likelihood $p(x|z)$, or even variational posterior $q(z|x)$ and still be
+doing variational inference in the correct sense.</p>
+<h3>Amortized Inference</h3>
+<p>There is an interesting point to make about our inference net $q(z|x)$. It performs
+what is known as <strong>amortized inference</strong>; amortized in the sense that for different
+$x_n$, the same parameters $\phi$ are used in inference for $z_n$. In traditional
+VI, we usually only compute $z_n$ based on $x_n$ and the original model parameters.
+However, in amortized inference we can generalize to unseen $x$ and $z$!</p>
+<h1>Why do we care?</h1>
+<p>So we saw that there's two ways to look at VAEs. Are there advantages to one over the other? It seems that both have value.</p>
+<p>For deep learning practitioners, the fact that VAEs are motivated by variational inference is not really relevant. As long as the generative model can produce good results (i.e. pretty pictures) it's good enough. Therefore, papers that use this interpretation think about how to have better encoders and decoders, and when it makes sense to regularize latent codes with the KL term.</p>
+<ul>
+<li>One example from NLP is the sentence VAE (Bowman et al, 2015). Here, $x$ is a sentence, $z$ is a Gaussian vector, and the encoder and decoders are LSTMs.</li>
+<li>A recent example is the VQ-VAE (van den Oord et al, 2017), which makes $z$ a discrete table of latent vectors. This doesn't correspond to any standard probability distributions, yet they achieve remarkable results nonetheless.</li>
+</ul>
+<p>For Bayesian practicitioners, the VAE setup is not necessarily for generative modeling, but can do inference on actually useful models (i.e. interesting $z$).</p>
+<ul>
+<li>In <a href="http://approximateinference.org/2017/accepted/SinghEtAl2017.pdf">my last project</a>, we assumed that $z$ was distributed according to an Indian buffet process, a nonparametric feature allocation distribution. We showed that the VAE setup allows us to learn latent features with frequencies that resembles the IBP distribution.</li>
+<li>This interpretation can also shed light on principled ways to improve VAEs. One
+example is ELBO surgery (Hoffman &amp; Johnson, 2016): they rewrite the ELBO in a
+certain way and show that the KL between the prior $p(z)$ and the <em>average marginal</em>
+$q(z) = \sum \frac 1N q(z_n | x_n)$ can be small, but the <em>average KL</em>
+$\sum \frac 1N KL(q(z_n|x_n)||p(z))$ can still be large. This suggests that
+traditional priors may be harder to learn for an individual sample than previously
+thought. My friend Rachit has a <a href="https://rachitsingh.com/elbo_surgery/">great post</a>
+explaining this in detail.</li>
+</ul>
+<p>To conclude, we see that VAEs can be interesting and useful from more than one point of view. This is what makes them such an exciting area of research!</p>
+<h1>References</h1>
+<ul>
+<li><a id="ref-Kingma2013"></a>
+Kingma, Diederik P, and Max Welling. 2013. “Auto-Encoding Variational
+Bayes.” In <em>ICLR</em>.</li>
+<li><a id="ref-Oord2017"></a>
+Oord, Aaron van den, Oriol Vinyals, and Koray Kavukcuoglu. 2017. “Neural
+Discrete Representation Learning.” <em>NIPS</em>.</li>
+<li><a id="ref-Bowman2016"></a>
+Bowman, Samuel R., Luke Vilnis, Oriol Vinyals, Andrew M. Dai, Rafal
+Jozefowicz, and Samy Bengio. 2016. "Generating Sentences from a
+Continuous Space." <em>CONLL</em>.</li>
+<li><a id="ref-Hoffman2016"></a>
+Hoffman, Matthew D, and Matthew J Johnson. 2016. “ELBO surgery: yet
+another way to carve up the variational evidence lower bound.” <em>Advances
+in Approximate Bayesian Inference, NIPS Workshop</em>.</li>
+<li><a id="ref-Roeder2017"></a>
+Roeder, Geoffrey, Yuhuai Wu, and David Duvenaud. 2017. “Sticking the
+Landing : Simple , Lower-Variance Gradient Estimators for Variational
+Inference.” <em>NIPS</em>.</li>
+</ul>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>It turns out that it's counterintuitively <em>not</em> always better to use closed form expressions for the KL, even if we can compute it. (Roeder 2017) explains why: when we're close to the optimum, sampling instead of using the closed form can actually help us reduce variance of our Monte Carlo gradient estimators. This will help us converge, or in their words, "stick the landing".&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 Jeffrey Ling</span>
+    </div>
+  </footer>
+</body>
+</html>

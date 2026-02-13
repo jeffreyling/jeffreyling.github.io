@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NIPS 2017 - Jeffrey Ling</title>
+  <link rel="stylesheet" href="../style.css">
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      TeX: { equationNumbers: { autoNumber: "AMS" } },
+      tex2jax: {
+        inlineMath: [ ['$','$'] ],
+        displayMath: [ ['$$','$$'] ],
+        processEscapes: true,
+      }
+    });
+  </script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</head>
+<body>
+  <header class="top-nav">
+    <div class="nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <svg height="32" viewBox="0 0 16 16" width="32" fill="#fff">
+          <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+        </svg>
+      </a>
+      <nav class="nav-links">
+        <a href="../index.html">Overview</a>
+        <a href="../blog.html" class="active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="profile-container">
+    <section class="profile-content" style="max-width: 900px; margin: 0 auto;">
+      <a href="../blog.html" class="back-link">&larr; Back to blog</a>
+      <article class="post-article">
+        <header class="post-header">
+          <h1>NIPS 2017</h1>
+          <div class="post-meta">Dec 11, 2017</div>
+        </header>
+        <div class="post-body">
+          <p>I attended NIPS 2017 in Long Beach, CA -- my first conference! Rachit and I presented our short paper at the <a href="http://approximateinference.org/">approximate Bayesian inference workshop</a>.</p>
+<p>Overall, it was an incredible experience. Six days of little sleep, skipped meals, and a tremendous amount of talks, posters, and papers to process.
+I learned a lot, met cool people, and gained exposure to a ton of interesting ideas. 
+Additionally, I unexpectedly ran into several people who I know from past internships, etc. Turns out everyone is doing machine learning these days!</p>
+<p>The poster sessions were undoubtedly the highlight of the conference. While the talks are good, they are often hard to understand, not to mention the fact that several talks happen at the same time. (I think a lot of people end up skipping talks to spend time meeting old friends / properly feeding themselves.)
+On the other hand, everyone goes to the poster sessions. Some high profile professors were even presenting their posters! The discussions at the posters are what research is really about - sharing awesome work with people who are interested in the fine-grained details.</p>
+<p>While I’ve read so many papers from research labs all over the world, I actually have no idea what most of the authors look like or sound like in real life. At NIPS, I was finally able to put  a face and voice to many of these people :)</p>
+<p>Some highlights:</p>
+<ul>
+<li>Flo Rida was at an Intel party, straight out of a Silicon Valley scene</li>
+<li>The Imposteriors (stat professors, including Michael Jordan and David Blei), performed in a live band for the final day reception</li>
+<li>Ali Rahimi’s test of time award talk, equating machine learning to alchemy - spurred a ton of debate (including with Yann LeCun) on the importance of engineering vs. theory</li>
+<li>One of the best papers has solved poker (no limit Hold'em)!</li>
+</ul>
+<p>Some research observations:</p>
+<ul>
+<li>Favorite talks:<ul>
+<li>John Platt, who showed a cool application of variational inference for nuclear fusion engineering</li>
+<li>Emma Brunskill, who discussed a ton of interesting challenges and applications for reinforcement learning</li>
+</ul>
+</li>
+<li>Favorite posters / papers:<ul>
+<li>Inverse reward design (Hadfield-Menell et al). An RL agent is Bayesian about a reward function.</li>
+<li>Sticking the landing (Roeder et al). Shows that closed form KLs for the gradient estimator may actually have higher variance, and proposes a neat and quick solution.</li>
+</ul>
+</li>
+<li>Favorite panel: Tim Salimans, Max Welling, Zoubin Ghahramani, David Blei, Katherine Heller, Matt Hoffman (moderator) at approximate Bayesian inference workshop. </li>
+<li>Favorite quote (by Zoubin): If you put a chicken in a MNIST classifier, you already know it's not going to be a 1 or 7!</li>
+<li>Not as much NLP as I expected.</li>
+<li>Deep learning is a big deal. All the deep learning talks were easily the most well-attended.</li>
+<li>People still love GANs. Gaussian processes are becoming popular on the Bayesian front.</li>
+<li>An increasing interest in how ML will work in society, particularly with issues of bias and fairness.</li>
+</ul>
+<p>If you’re interested in a blow-by-blow recap of my NIPS experience, read below (warning: lots of details).</p>
+<h2>Day 1</h2>
+<p>Crazy long line out the door! According to the organizers, about 8000 people signed up for NIPS this year. I arrived Sunday and was able to get my registration that night, which proved to be a good decision. ;)</p>
+<p>Also, the career fair booths were pretty next level (compared to a college career fair).</p>
+<h1>Tutorials 1</h1>
+<p>I attended the first 8am tutorial on "Reinforcement learning for the people, by the people" presented by Emma Brunskill. At a high level, the talk covered two ideas: first, how can we do RL in settings where humans are involved, and second, how can we include people as part of the learning process.</p>
+<p>The talk brought up several research problems about RL in these settings. Here's a bit of a brain dump of what I saw.</p>
+<ul>
+<li>Sample efficiency. Unlike games / robotics, we can't endlessly simulate humans.</li>
+<li>Multi-task learning for education. Assume students are assigned to latent groups, and do inference. Referenced Finale's work on better models (e.g. Bayesian neural net).</li>
+<li>Policy search. Use Gaussian process to limit search. Shared basis for multi task, representation learning to generalize.</li>
+<li>Different metrics. Beyond expectation, need to consider risk as humans will only see one trajectory. Safe exploration.</li>
+<li>Batch RL, learning from prior data. Uses counterfactual reasoning, e.g. for classrooms assigned different education methods, or patient treatment. Key difficulty here is policy evaluation, hard because off policy (old data)</li>
+<li>Better models can lead to worse policies. Models have high log-likelihood but get bad rewards.</li>
+<li>Importance sampling for policy evaluation. Unbiased, but high variance for long horizon.</li>
+<li>You can replace education "experts" with an RL policy evaluator :)</li>
+</ul>
+<p>By the people:</p>
+<ul>
+<li>Reward specification, imitation learning, supervised learning for trajectories is not i.i.d.</li>
+<li>How to get access to experts? Which features matter? Difference in showing vs. doing (e.g. teaching surgery).</li>
+</ul>
+<p>I found this talk really well done! There was a ton of super exciting and awesome work cited. Definitely a flood of information that will take some time to parse.</p>
+<h1>Tutorials 2</h1>
+<p>I jumped around a bit for the 10:45am tutorial. First, I went to "Fairness in Machine Learning". The talk went on for a while about discrimination law (NOT the GAN discrimination!!), which is interesting but not what I was looking for.</p>
+<p>Went to deep Gaussian process tutorial by Neil Lawrence. Some cool intuition on GP kernels, also claimed that the universe is a Gaussian process (???)</p>
+<p>Briefly visited StarAI tutorial but the middle was too technical for my background.</p>
+<h1>Tutorials 3</h1>
+<p>Went to the probabilistic programming tutorial. Josh Tenenbaum first talked about learning intuitive physics and showed some cat and baby videos.</p>
+<p>Vikash Mansinghka talked more about details. Slides on automatic statistician (David Duvenaud's work), where priors on hyperparameters helped a lot. Their language is Venture. Some cool work on probabilistic graphics program, doing inference on the renderer.</p>
+<h1>John Platt</h1>
+<p>John Platt from Google gave an amazing talk on using machine learning to help solve the energy problem. Great speaker - conveyed clearly the science that was needed behind energy economics, current failings, and potential solutions.</p>
+<p>He then went on to talk about using Bayesian inference to aid in nuclear fusion engineering, which was awesome.</p>
+<h1>Posters</h1>
+<p>The poster session was absolutely nuts. For the first hour or so, you couldn't get near any poster due to crowding. Later it was much more reasonable.</p>
+<p>Some posters I saw:</p>
+<ul>
+<li>Neural Expectation Maximization. They changed the sequential updates of EM into an RNN with the M-step gradient as input, lol.</li>
+<li>Unsupervised Transformation Learning via Convex Relaxations. Cool direction in manifold learning where transformations between nearest neighbors are learned, instead of latent code approach.</li>
+<li>Context Selection for Embedding Models. Learn embeddings for shopping items, modeled as a binary mask with count data. Inference on latents using the VAE setup.</li>
+<li>Toward Multimodal Image-to-Image Translation. Bicycle GAN has been added to the cycle GAN zoo. It does matched style transfer but has many modes.</li>
+<li>One-Shot Imitation Learning. Do supervised learning on expert actions, using attention over time steps to decide how to imitate at test time.</li>
+<li>Variational Inference via Chi Upper Bound Minimization. Uses a COBO (?) upper bound with ELBO to get sandwich estimator for log likelihood. Trains better due to better tail behavior capturing.</li>
+<li>Q-LDA: Uncovering Latent Patterns in Text-based Sequential Decision Processes. Model of text game with latent Dirichlet process, and a learned "reward" function. Does mirror descent and MAP inference.</li>
+<li>InfoGAIL: Interpretable Imitation Learning from Visual Demonstrations. GANs can now be used for imitation learning, and this adds a latent code that disentangles expert policy behaviors.</li>
+</ul>
+<p>Definitely missed a lot of posters because of the crowding issues, and I couldn't get close enough to ask questions. Also, because there are just too many (&gt;200).</p>
+<p>On the other hand, the poster session is clearly the highlight of the conference. Lots of great work and good conversations all around.</p>
+<h2>Day 2</h2>
+<h1>Brendan Frey</h1>
+<p>Brendan Frey gave a talk on using machine learning in gene therapy, and how to speed up clinical trials. He observed that problems in biology are unlike game playing, since unlike in games, even humans are bad at biology.</p>
+<h1>Test of time</h1>
+<p>The author of the test-of-time award paper, Ali Rahimi, talked about bringing back scientific rigor in ML. He brought up a quote by Andrew Ng, “machine learning is like the new electricity”, and suggested that “electricity” should instead be “alchemy”. ML is alchemy in that deep learning models have produced useful innovations, like alchemy, but also was a fundamentally flawed way of thinking, just like alchemy.</p>
+<p>Ali also asked the audience if anyone had ever built a neural net, tried to train it and failed, and felt bad for themselves (lol). He says “it’s not your fault, it’s SGD’s fault!”, meaning that there’s basically no theory why anything works or doesn’t work.</p>
+<p>Overall, great talk on a trend in machine learning I have definitely been concerned about.</p>
+<h1>Morning talks</h1>
+<p>Two tracks: optimization and algorithms. I was mostly at the optimization talks.</p>
+<ul>
+<li>Tensor decomposition - understanding the landscape</li>
+<li>Robust optimization, treat corrupted datasets with known noise types as optimization over choice of loss functions</li>
+<li>Bayesian gradient optimization - use gradient information in GPs for acquisition function</li>
+</ul>
+<p>Second track on theory, and afternoon talks</p>
+<ul>
+<li>Best paper on subgame solving, they used it to beat best poker players (best paper)</li>
+<li>Stein estimator for model criticism (best paper)</li>
+</ul>
+<p>It’s pretty hard to keep track of everything since there’s two tracks and so many talks.</p>
+<h1>Kate Crawford</h1>
+<p>Kate Crawford spoke in the afternoon about bias in machine learning from a societal perspective. She talked about how biased ML systems cause bad effects in two ways: on the individual level (e.g. people get denied mortgage because of demographic), and on a societal level (misrepresentation in culture, e.g. stereotypes). </p>
+<p>Overall was a solid talk, really highlighted a lot of things ML researchers need to keep in mind as ML becomes more prevalent.</p>
+<h1>Posters</h1>
+<p>Some posters that caught my eye:</p>
+<ul>
+<li>Active Bias: Training More Accurate Neural Networks by Emphasizing High Variance Samples. Update your learning based on training examples with bad prediction error. Andrew McCallum was at the poster</li>
+<li>A-NICE-MCMC: Adversarial Training for MCMC. Treat Metropolis Hastings as learned process, use a neural net to learn transition function (?). Check paper details.</li>
+<li>Identification of Gaussian Process State Space Models. Use inference net to train a GP.</li>
+<li>Filtering Variational Objectives. By Chris Maddison, Rachit read this paper. I have yet to read</li>
+<li>Poincare Embeddings for Learning Hierarchical Representations. Some crazy visuals on word embeddings on a manifold, didn’t get to look at the poster.</li>
+<li>Learning Populations of Parameters. Kevin Tian’s poster! Example: independent coins each flipped twice, should not use maximum likelihood for all of them separately.</li>
+</ul>
+<p>Overall: lots of approximate inference posters. Tons of posters on GPs, really a hot topic these days. Posters on Stein method, something I need to learn about.</p>
+<p>End of day 2: becoming really exhausted, so many posters and so little time! Also, the Flo Rida party was full which was super disappointing. I was looking forward to hearing My House live.</p>
+<h2>Day 3</h2>
+<h1>Morning session</h1>
+<p>Missed a lot of the morning due to sleeping in and talking to people. Some talk highlights:</p>
+<ul>
+<li>Generalization gap in large batch deep learning. Apparently small batches lead to large weight distances from initialization, but large batches don’t. This is an optimization issue. Need to read paper for details.</li>
+<li>End to end differentiable proving. Using Prolog backward chaining. Try to learn proof success.</li>
+</ul>
+<h1>Lunch session</h1>
+<p>I went with Rachit to a lunch session on Pyro, Pytorch distributions, and probtorch, which was led by the leads of all these frameworks (Noah Goodman, Soumith Chintala, Adam Paszke, Dustin Tran guest appearance). Some interesting discussion on the challenges and best way to integrate the distributions library. Looking forward to how this works out, I really love Pytorch :)</p>
+<h1>Pieter Abbeel</h1>
+<p>Pieter Abbeel gave a talk on his RL work (of which there’s a ton!). I actually found the talk a bit hard to follow, even though I enjoy reading his work. Covered topics including MAML, meta learning, hierarchical policies, simulated data, hindsight experience replay. He really believes that meta learning is the answer, since big data beats human ingenuity with enough compute in the long run.</p>
+<p>One highlight was when he showed the picture of the chocolate cake with a cherry on top (from last year?) and replaced it with a cake covered with cherries. The cake is supervised learning, the icing unsupervised, and the cherry reinforcement learning -- he wants more cherries!!</p>
+<h1>Afternoon talks</h1>
+<p>Lots of great talks this afternoon. Sadly can only attend one of two sessions.</p>
+<ul>
+<li>ELF game simulator. Apparently works faster than everything else out there.</li>
+<li>Imagination augmented deep RL. Basically model based RL with simulation policy for rollouts. There is a rollout encoder RNN that produces an “imagination augmented code”, which is combined with a model free code to form a loss. Policy gradient training. At the end, there was an audience question representing the “hype police” to retract the word “imagination” - I honestly felt like this was really rude. If you want to challenge someone’s work, you can do it either respectfully or offline.</li>
+<li>Off policy evaluation for the following problem: user interacts with website, website can choose combinatorial list of actions (slates?), get reward. This is a bandit; they come up with a new method to do off-policy estimation. Well done talk!</li>
+<li>Hidden Parameter MDPs (Finale’s work). Pacing of talk was a bit weird. Model based RL. Used a Bayesian neural net instead of linear combination of GPs for the model, trained policy with Double DQN.</li>
+<li>Inverse reward design. One of the coolest ideas I think, though even after reading the paper I have trouble understanding what exactly their technical methods are. Essentially, they set a Bayesian prior on reward functions, so that even if it’s badly specified, the agent can learn something from the posterior.</li>
+<li>Interruptible RL. Puts human in the loop. Defines two concepts: safe interruptibility (policy should be optimal in non-interruptible environment), dynamic safe interruptibility (should not prevent exploration, policy update should not depend on interruption)</li>
+<li>Uniform PAC guarantees for RL. Combine regret bounds + PAC framework into uniform PAC. For all epsilon (uniformly), bound number of episodes not within epsilon in probability.</li>
+<li>Repeated Inverse RL. Something about multiple tasks: learner chooses a task, human reveals optimal policy for given reward function. Adversary chooses task, learner proposes policy and minimizes mistakes.</li>
+<li>RL exploration in high dim state space. Classify novelty of states from past experience, adding a reward bonus for novelty. Use exemplar one vs all models, to do density estimation. (Seems dangerous to do this reward thing?)</li>
+<li>Regret minimization in MDPs with options. Options are temporally extended actions, can be harmful. They come up with a way to choose options to minimize regret.</li>
+<li>Transfer in RL with multiple tasks. Use generalized policy improvement (GPI) as uniform argmax over set of MDP policies. Successor features (weighted discounted reward) to evaluate policy across all tasks.</li>
+</ul>
+<h1>Posters</h1>
+<p>Was really tired, didn’t process very many of these. High level: saw a whole section on online learning.</p>
+<ul>
+<li>Sticking the landing (from David Duvenaud’s group). Apparently adding one stop gradient can lower the REINFORCE gradient variance once the ELBO is near minimum. This is counterintuitive, since most people use the KL closed form instead of the whole Monte Carlo expression for ELBO.</li>
+<li>Self supervised learning of motion capture. Some neural net to learn parameters of a human modeling mesh based on keypoint and image input.</li>
+<li>Counterfactual fairness. This was a talk I missed. They use counterfactual reasoning to see what would happen to certain datapoints of people if their race etc. were switched. Super cool!</li>
+</ul>
+<h2>Day 4</h2>
+<h1>Yee Whye Teh</h1>
+<p>Yee Whye Teh gave a nice talk on Bayesian methods and deep learning. He highlighted three projects: first, a Bayesian neural net where the posterior was estimated with a distributed system of workers. The workers do MCMC updates on parameters and send messages to server, who does EP. He gave an interesting point where since parameters are symmetric/non-identifiable, we should look for priors over functions (GPs?), not over parameters as we do now.</p>
+<p>The other two projects were Concrete (Maddison) and Filtering Variational Objectives. Even more reason to read about FVO.</p>
+<h1>Morning talks</h1>
+<p>Some highlights:</p>
+<ul>
+<li>Masked autoregressive flow for density estimation. In standard inverse autoregressive flow, try to make invertible neural net. Usually use Gaussians, which aren’t flexible, can fix this with stacking (masked). Real NVP faster (parallel) but less flexible than masked. </li>
+<li>Deep sets. Learn equivariant and permutation invariant functions on sets. Surprised they didn’t even mention PointNet, a paper with similar motivations in CVPR (even if they are concurrent work). One cool application with margin training on words from LDA topics, which apparently does better than word2vec.</li>
+</ul>
+<h1>Symposia</h1>
+<p>The afternoon was a bunch of symposia. There were four tracks, all of which had interesting topics and speakers, so I had to jump around a bunch. The four were: (1) Deep RL, (2) Interpretable ML, (3) Kinds of intelligence, (4) Meta-learning.</p>
+<ul>
+<li>Deep RL: learning with latent language representations (Jacob Andreas). Can do few shot policy learning, by learning concepts with strings. Didn’t give many details, so I have to read paper.</li>
+<li>Intelligence: Demis Hassabis talked about AlphaZero etc. He is a pretty good speaker.</li>
+<li>Interpretable ML: Explainable ML challenge (Been Kim). Apparently FICO released a dataset, and they want to be able to build a model that’s not only predictive but interpretable, so that if someone has bad credit we can understand why. This has implications if ML becomes regulated in the future, since uninterpretable models won’t be acceptable.</li>
+<li>Meta-learning: Max Jaderberg on hyperparameter search methods. </li>
+<li>Meta-learning: Pieter Abbeel gave the same talk as yesterday…</li>
+<li>Meta-learning: Schmidhuber gave an incomprehensible talk on what is meta learning</li>
+<li>Meta-learning: Satinder Singh talked about the reward design problem. Agent has an internal representation of reward, and this can be learned through policy gradient somehow. </li>
+<li>Meta-learning: Ilya Sutskever gave a hype talk on self play and how it will lead to agents with better intelligence fast (surpassing humans). I don’t really buy that it will work so easily.</li>
+</ul>
+<p>Food in between was much better, they also gave us a coupon for food trucks.</p>
+<p>Evening:</p>
+<ul>
+<li>Cynthia Dwork came to talk about fairness in ML. David Runciman (philosopher) talked about how AI is like artificial agents (e.g. corporations). Panel with Zoubin Ghahramani, talked a bit about what AI should be… not a clear consensus</li>
+</ul>
+<p>Our workshop talk is tomorrow so we need to prepare for that! Time to get grilled by the experts in the field.</p>
+<h1>Day 5</h1>
+<p>Workshop day! Rachit and I gave our talk! We practiced with Finale briefly before.
+The talk itself was short and quite uneventful. Zoubin Ghahramani sat in the front row which was pretty awesome… I’m sure other high profile researchers were in the audience.</p>
+<p>Some of the other talk highlights:</p>
+<ul>
+<li>Netflix uses VAEs for recommendation. Use KL annealing hacks, I can’t really see this working in practice</li>
+<li>Andy Miller: Taylor residuals for low variance gradients</li>
+<li>Yixin Wang: consistency of variational Bayes</li>
+</ul>
+<p>A couple other talks I went to at other workshops:</p>
+<ul>
+<li>Percy Liang: talked about adversaries and using natural language as a collaboration tool. Work on SHRDLURN</li>
+<li>QA: computer system beat Quizbowl humans</li>
+</ul>
+<p>Approximate inference panel: a fun discussion with Matt Hoffman (moderator), Tim Salimans, Dave Blei, Zoubin, Katherine Heller, and Max Welling. Turns out all of these people are incredibly funny.</p>
+<ul>
+<li>Zoubin introduced himself as a dinosaur of machine learning, Max Welling a half-dinosaur, Blei a woolly mammoth.</li>
+<li>Dave Blei randomly talked about Alan Turing and codebreaking with Bayesian statistics, this book: https://www.amazon.com/Between-Silk-Cyanide-Codemakers-1941-1945/dp/068486780X</li>
+<li>Welling: We should not miss exponential families, deep learning is good. Dave Blei says exponential families can be useful with some discrete data.</li>
+<li>Zoubin: we should do transfer testing. We can’t assume test distribution will be same as train in the real world since it’s so much bigger</li>
+<li>Zoubin: deep learning is basically nonparametric since almost infinite parameters</li>
+<li>Zoubin: estimate errors for discriminative models? Some notion of p(x) for these? If you stick a chicken in MNIST classifier it’s neither 1 nor 7 (lol)</li>
+</ul>
+<p>It turns out that all the workshops have amazing programs and I missed a lot of cool invited talks (a lot of the time we had to be at our poster). For example, other workshops had great speakers like Jeff Dean, Fei-Fei, and Ian Goodfellow, just to name a few. It’s too bad they’re all concurrent… the same thing will probably happen tomorrow.</p>
+<h1>Day 6</h1>
+<p>Last day of NIPS! Started the day off early with Bayesian deep learning workshop.</p>
+<ul>
+<li>Dustin Tran talked about Edward and probabilistic programming. Seems like the main difficulty is that there’s still no generalized inference procedure.</li>
+<li>Really interesting contributed talk: tighter lower bounds are not necessarily better. For the IWAE, higher K can actually lower the signal-to-noise ratio of the gradient, forcing it to 0.</li>
+<li>Finale: discussed horseshoe priors for Bayesian neural nets. Better tail / sparsity than Gaussian priors.</li>
+<li>Welling: highlighted 3 directions: deep GPs, information bottleneck, variational dropout.</li>
+</ul>
+<p>Also checked out the theory of deep learning workshop.</p>
+<ul>
+<li>Peter Bartlett discussed the generalization paper from ICLR. Examine classification margins, scale by network operator norm in some sense.</li>
+</ul>
+<p>Theory Posters: very little successful theory, focuses on small neural networks. A lot of empirical work to test hypotheses.</p>
+<ul>
+<li>Homological properties of neural nets, some truly crazy stuff</li>
+<li>Neural nets are robust to some random label noise in data, as in it gracefully degrades performance</li>
+<li>Madry tried to get metrics for GANs (besides Inception score, which I actually don’t know). Simple binary classification problems on features of data, show that many common GANs can’t properly match the true distribution classification.</li>
+</ul>
+<p>Bayesian posters:</p>
+<ul>
+<li>Matt Hoffman on beta-VAEs. Showed that the beta-VAE loss corresponds to some other prior. Standard beta loss then corresponds to trying to get the posterior without including an entropy promoting term. Should read more about this (ELBO surgery).</li>
+</ul>
+<p>Later, jumped back and forth between workshops.</p>
+<ul>
+<li>Matt Hoffman: SGD as approximate Bayesian inference. By making some Gaussian assumptions on the gradients, get an OU process, like MCMC. Iterate averaging is the optimal, so we can’t beat linear time.</li>
+<li>Russ Salakhutdinov: deep kernel learning. Basically in GPs, also learn the hyperparameters of the kernel.</li>
+<li>Sham Kakade: policy gradient guarantees for LQR model in RL control. No analogues of robustness in MDPs?</li>
+</ul>
+<p>Theory Panel: Sanjeev Arora (moderator), Sham Kakade, Percy Liang, Salakhutdinov, Yoshua Bengio (20 min), Peter Bartlett</p>
+<ul>
+<li>On adversarial examples: Bengio: we should use p(x) so our discriminative model doesn’t fail as much.</li>
+<li>Russ: pixels suck, so people used HOG / SIFT features. Now we use CNNs which are pixel based…</li>
+<li>Discussion on combining deep learning with rule based methods (60s-70s).</li>
+</ul>
+<p>Finally, to wrap up, there was an awesome reception. The Imposteriors, a band made of statistics professors (including Michael Jordan!), performed live music! Also, David Blei made a guest appearance on accordion! Truly a highlight of the conference.</p>
+<p>Will write up a summary / highlights soon, this is very long. The main takeaway for me was to associate a face to all of the famous researchers.</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 Jeffrey Ling</span>
+    </div>
+  </footer>
+</body>
+</html>

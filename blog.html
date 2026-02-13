@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog - Jeffrey Ling</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top-nav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <svg height="32" viewBox="0 0 16 16" width="32" fill="#fff">
+          <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
+        </svg>
+      </a>
+      <span class="nav-title">Jeffrey Ling</span>
+    </div>
+  </header>
+
+  <main class="profile-container">
+    <aside class="profile-sidebar">
+      <img src="images/profile.jpg" alt="Jeffrey Ling" class="avatar">
+      <h1 class="profile-name">Jeffrey Ling</h1>
+      <span class="profile-username">jeffreyling</span>
+    </aside>
+
+    <section class="profile-content">
+      <div class="content-tabs">
+        <a href="index.html" class="tab">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M0 1.75A.75.75 0 0 1 .75 1h4.253c1.227 0 2.317.59 3 1.501A3.743 3.743 0 0 1 11.006 1h4.245a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75h-4.507a2.25 2.25 0 0 0-1.591.659l-.622.621a.75.75 0 0 1-1.06 0l-.622-.621A2.25 2.25 0 0 0 5.258 13H.75a.75.75 0 0 1-.75-.75Zm7.251 10.324.004-5.073-.002-2.253A2.25 2.25 0 0 0 5.003 2.5H1.5v9h3.757a3.75 3.75 0 0 1 1.994.574ZM8.755 4.75l-.004 7.322a3.752 3.752 0 0 1 1.992-.572H14.5v-9h-3.495a2.25 2.25 0 0 0-2.25 2.25Z"></path></svg>
+          Overview
+        </a>
+        <a href="blog.html" class="tab active">
+          <svg viewBox="0 0 16 16" width="16" height="16" fill="currentColor"><path d="M11.93 8.5a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Zm-1.43-.75a2.5 2.5 0 1 0-5 0 2.5 2.5 0 0 0 5 0Z"></path></svg>
+          Blog
+        </a>
+      </div>
+
+      <ul class="post-list">
+        <li>
+          <div class="post-meta">Jan 9, 2018</div>
+          <a href="posts/vaes-are-bayesian.html" class="post-title-link">VAEs are Bayesian</a>
+          <p class="post-excerpt">Variational autoencoders (VAEs) have become an extremely popular generative model in deep learning. While VAE outputs don't achieve the same level of prettiness that GANs do, they are theoretically well-motivated by probability theory and Bayes' rule.</p>
+        </li>
+        <li>
+          <div class="post-meta">Dec 11, 2017</div>
+          <a href="posts/nips-2017.html" class="post-title-link">NIPS 2017</a>
+          <p class="post-excerpt">I attended NIPS 2017 in Long Beach, CA -- my first conference! Overall, it was an incredible experience. Six days of little sleep, skipped meals, and a tremendous amount of talks, posters, and papers to process.</p>
+        </li>
+        <li>
+          <div class="post-meta">Nov 18, 2017</div>
+          <a href="posts/rl-as-optimization.html" class="post-title-link">Reinforcement Learning as Optimization</a>
+          <p class="post-excerpt">When I first learned about deep reinforcement learning, I was extremely confused how RL could fit in with deep learning. The trick is to understand that RL is simply optimizing a particular loss function.</p>
+        </li>
+        <li>
+          <div class="post-meta">Nov 18, 2017</div>
+          <a href="posts/welcome.html" class="post-title-link">Welcome</a>
+          <p class="post-excerpt">Welcome to my blog! I'm starting this space so that I can organize my ideas, provide interesting and educational content to the public, and practice writing.</p>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>&copy; 2026 Jeffrey Ling</span>
+    </div>
+  </footer>
+</body>
+</html>
