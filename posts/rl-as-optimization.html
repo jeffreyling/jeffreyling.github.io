@@ -25,10 +25,7 @@
           <path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path>
         </svg>
       </a>
-      <nav class="nav-links">
-        <a href="../index.html">Overview</a>
-        <a href="../blog.html" class="active">Blog</a>
-      </nav>
+      <span class="nav-title">Jeffrey Ling</span>
     </div>
   </header>
 
@@ -78,7 +75,7 @@ $$
 \newcommand{\on}{\operatorname}
 $$
 </div>
-          <p>When I first learned about deep reinforcement learning, I was extremely
+<p>When I first learned about deep reinforcement learning, I was extremely
 confused how RL could fit in with deep learning – the two topics seem
 totally different, at least in the ways they’re presented! The trick is
 to understand that RL is simply optimizing a particular loss function,
@@ -120,7 +117,7 @@ MDP has the following parameters:</p>
 state $s_0$. At time $t$, the agent is in state $s_t$ and decides to
 make action $a_t$, receiving reward $r_t = r(s_t, a_t)$. The agent wants
 to maximize their total expected discounted reward</p>
-<p>$$\mathbb{E}<em>{s_t, a_t, r_t} \left[ \sum</em>{t=0}^T \gamma^t r_t \right]$$</p>
+<p>$$\mathbb{E}_{s_t, a_t, r_t} \left[ \sum_{t=0}^T \gamma^t r_t \right]$$</p>
 <p>where the expectation is over all sampled <em>trajectories</em>
 $s_0, a_0, s_1, a_1, \ldots, s_T, a_T$. To be clear
 $s_{t+1} \sim p(s_{t+1}|s_t, a_t)$ throughout the trajectory, and
@@ -181,9 +178,9 @@ we start from state $s$ and act optimally; $Q(s,a)$ tracks the same if
 we start with action $a$ in state $s$.</p>
 <p>Note the direct relation $V(s) = \arg\max_a Q(s,a)$. Also, in optimality
 we have</p>
-<p>$$V^<em>(s) = \max_{a \in \mcA} r(s,a) + \gamma \mathbb{E}_{s' \sim p(s'|s,a)} [V^</em>(s')]$$</p>
-<p>$$Q^*(s,a) = r(s,a) + \gamma \mathbb{E}<em>{s' \sim p(s'|s,a)} \left[ \max</em>{a' \in \mcA} Q(s', a') \right]$$</p>
-<p>by recursively defining $V^*$ and $Q^*$ as optimal. These relations are
+<p>$$V^*(s) = \max_{a \in \mcA} r(s,a) + \gamma \mathbb{E}_{s' \sim p(s'|s,a)} [V^*(s')]$$</p>
+<p>$$Q^*(s,a) = r(s,a) + \gamma \mathbb{E}_{s' \sim p(s'|s,a)} \left[ \max_{a' \in \mcA} Q(s', a') \right]$$</p>
+<p>by recursively defining $V^\*$ and $Q^\*$ as optimal. These relations are
 known as the <strong>Bellman equations</strong>, and they are necessary and
 sufficient for optimality.</p>
 <p>If we can learn either of these, note the optimal policy will be
@@ -199,9 +196,9 @@ get reward $r$, we make the update</p>
 <p>The astute reader will realize that this update rule is actually
 gradient descent on some kind of least squares objective! Specifically,
 the loss is</p>
-<p>$$\mcL = \mathbb{E}<em>{s,a}\left[ \left( Q(s,a) - (r(s,a) + \gamma \mathbb{E}</em>{s' \sim p(s'|s,a)}[ \max_{a'} Q(s', a') ]) \right)^2 \right]$$</p>
+<p>$$\mcL = \mathbb{E}_{s,a}\left[ \left( Q(s,a) - (r(s,a) + \gamma \mathbb{E}_{s' \sim p(s'|s,a)}[ \max_{a'} Q(s', a') ]) \right)^2 \right]$$</p>
 <p>At optimality, we have that</p>
-<p>$$Q(s,a) \equiv r + \gamma \mathbb{E}<em>{s' \sim p(s'|s,a)} \max</em>{a'} Q(s', a')$$</p>
+<p>$$Q(s,a) \equiv r + \gamma \mathbb{E}_{s' \sim p(s'|s,a)} \max_{a'} Q(s', a')$$</p>
 <p>which is exactly the Bellman condition! In Q-learning, we try to satisfy
 the Bellman condition through optimizing $\mcL$ by sampling
 $s' \sim p(s' | s,a)$ and performing gradient ascent on the parameters
@@ -226,7 +223,7 @@ Atari games from pixels.</p>
 <h1>Policy Gradient</h1>
 <p>Instead of learning a proxy Q-function, we can try to solve the MDP
 directly. Let’s revisit the objective we want to optimize:</p>
-<p>$$\mcL = \mathbb{E}<em>{s_t, a_t} \left[ \sum</em>{t=0}^T \gamma^t r_t(s_t, a_t) \right]$$</p>
+<p>$$\mcL = \mathbb{E}_{s_t, a_t} \left[ \sum_{t=0}^T \gamma^t r_t(s_t, a_t) \right]$$</p>
 <p>Now, we assume our policy is a parameterized stochastic map
 $\pi(\cdot; \theta) : \mcS \to \mcA$, so that we draw actions according
 to $a_t \sim \pi(a_t | s_t; \theta)$. Immediately, we run into a problem
@@ -236,15 +233,15 @@ with backpropagation – how do we backpropagate through the expectation?</p>
 score function estimator, or the likelihood ratio estimator.<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> Let
 the quantity in the expectation be $f(s_t, a_t)$, so that if we write
 out the expectation over the $a_t$ in full:</p>
-<p>$$\mcL = \sum_t \gamma^t \mathbb{E}<em>{s</em>{t+1} \sim p(s_{t+1} | s_t, a_t)} \sum_{a_t} \pi(a_t | s_t; \theta) r(s_t, a_t)$$</p>
+<p>$$\mcL = \sum_t \gamma^t \mathbb{E}_{s_{t+1} \sim p(s_{t+1} | s_t, a_t)} \sum_{a_t} \pi(a_t | s_t; \theta) r(s_t, a_t)$$</p>
 <p>Now we take the gradient with respect to $\theta$:</p>
 <p>$$\begin{aligned}
-\frac{\partial\mcL}{\partial \theta} &amp;= \sum_t \gamma^t \mathbb{E}<em>{s</em>{t+1} \sim p(s_{t+1} | s_t, a_t)} \sum_{a_t} \frac{\partial}{\partial \theta} ( \pi(a_t | s_t; \theta) r(s_t, a_t))  \
-&amp;= \sum_t \gamma^t \mathbb{E}<em>{s</em>{t+1} \sim p(s_{t+1} | s_t, a_t)} \sum_{a_t} \frac{\partial \pi(a_t | s_t; \theta)}{\partial \theta} r(s_t, a_t) \
-&amp;= \sum_t \gamma^t \mathbb{E}<em>{s</em>{t+1} \sim p(s_{t+1} | s_t, a_t)} \sum_{a_t} \frac{\partial \pi(a_t | s_t; \theta)}{\partial \theta} \frac{\pi(a_t | s_t; \theta)}{\pi(a_t | s_t; \theta)} r(s_t, a_t) \
-&amp;= \sum_t \gamma^t \mathbb{E}<em>{s</em>{t+1} \sim p(s_{t+1} | s_t, a_t)} \sum_{a_t} \pi(a_t | s_t; \theta) \frac{\partial \log \pi(a_t | s_t; \theta)}{\partial \theta} r(s_t, a_t) \
-&amp;= \sum_t \gamma^t \mathbb{E}<em>{s</em>{t+1} \sim p(s_{t+1} | s_t, a_t),\, a_t \sim \pi(a_t | s_t; \theta)} \frac{\partial \log \pi(a_t | s_t; \theta)}{\partial \theta} r(s_t, a_t) \
-&amp;=\mathbb{E}<em>{s</em>{t+1} \sim p(s_{t+1} | s_t, a_t),\, a_t \sim \pi(a_t | s_t; \theta)}\left[  \sum_t \gamma^t  \frac{\partial \log \pi(a_t | s_t; \theta)}{\partial \theta} r(s_t, a_t) \right]\end{aligned}$$</p>
+\frac{\partial\mcL}{\partial \theta} &= \sum_t \gamma^t \mathbb{E}_{s_{t+1} \sim p(s_{t+1} | s_t, a_t)} \sum_{a_t} \frac{\partial}{\partial \theta} ( \pi(a_t | s_t; \theta) r(s_t, a_t))  \\
+&= \sum_t \gamma^t \mathbb{E}_{s_{t+1} \sim p(s_{t+1} | s_t, a_t)} \sum_{a_t} \frac{\partial \pi(a_t | s_t; \theta)}{\partial \theta} r(s_t, a_t) \\
+&= \sum_t \gamma^t \mathbb{E}_{s_{t+1} \sim p(s_{t+1} | s_t, a_t)} \sum_{a_t} \frac{\partial \pi(a_t | s_t; \theta)}{\partial \theta} \frac{\pi(a_t | s_t; \theta)}{\pi(a_t | s_t; \theta)} r(s_t, a_t) \\
+&= \sum_t \gamma^t \mathbb{E}_{s_{t+1} \sim p(s_{t+1} | s_t, a_t)} \sum_{a_t} \pi(a_t | s_t; \theta) \frac{\partial \log \pi(a_t | s_t; \theta)}{\partial \theta} r(s_t, a_t) \\
+&= \sum_t \gamma^t \mathbb{E}_{s_{t+1} \sim p(s_{t+1} | s_t, a_t),\, a_t \sim \pi(a_t | s_t; \theta)} \frac{\partial \log \pi(a_t | s_t; \theta)}{\partial \theta} r(s_t, a_t) \\
+&=\mathbb{E}_{s_{t+1} \sim p(s_{t+1} | s_t, a_t),\, a_t \sim \pi(a_t | s_t; \theta)}\left[  \sum_t \gamma^t  \frac{\partial \log \pi(a_t | s_t; \theta)}{\partial \theta} r(s_t, a_t) \right]\end{aligned}$$</p>
 <p>Notice our trick: we used the fact that
 $\frac{\partial \log y}{ \partial x } = \frac{\partial y}{\partial x} \frac{1}{y}$.
 This allows us to efficiently sample our actions $a_t$ to calculate the
@@ -271,10 +268,10 @@ this turns out to be equal to</p>
 <p>$$\mathbb{E}_{a_t \sim \pi(a_t | s_t; \theta)} \left[ \frac{\partial \log \pi(a_t | s_t; \theta)}{\partial \theta} (r(s_t, a_t) - b) \right]$$</p>
 <p>for any $b$ constant with respect to $a_t$. This is because</p>
 <p>$$\begin{aligned}
-\mathbb{E}<em>{a_t} \left[ \frac{\partial\log \pi(a_t | s_t; \theta)}{\partial \theta} b \right] &amp;= b \sum</em>{a_t} \frac{\partial\log \pi(a_t | s_t; \theta)}{\partial \theta} \pi(a_t  | s_t; \theta)  \
-&amp;= b\sum_{a_t} \frac{\partial \pi(a_t | s_t; \theta)}{\partial \theta} \frac{\pi(a_t  | s_t; \theta)}{\pi(a_t | s_t; \theta)} \
-&amp;= b\sum_{a_t} \frac{\partial \pi(a_t | s_t; \theta)}{\partial \theta} \
-&amp;= b\frac{\partial}{\partial\theta} \sum_{a_t} \pi(a_t | s_t; \theta)  = b\frac{\partial}{\partial\theta} 1 = 0\\end{aligned}$$</p>
+\mathbb{E}_{a_t} \left[ \frac{\partial\log \pi(a_t | s_t; \theta)}{\partial \theta} b \right] &= b \sum_{a_t} \frac{\partial\log \pi(a_t | s_t; \theta)}{\partial \theta} \pi(a_t  | s_t; \theta)  \\
+&= b\sum_{a_t} \frac{\partial \pi(a_t | s_t; \theta)}{\partial \theta} \frac{\pi(a_t  | s_t; \theta)}{\pi(a_t | s_t; \theta)} \\
+&= b\sum_{a_t} \frac{\partial \pi(a_t | s_t; \theta)}{\partial \theta} \\
+&= b\frac{\partial}{\partial\theta} \sum_{a_t} \pi(a_t | s_t; \theta)  = b\frac{\partial}{\partial\theta} 1 = 0\\\end{aligned}$$</p>
 <p>So we can freely pick $b$ such that the estimate has the lowest variance - finding the optimal $b$ is outside the scope of this post. However, we
 can interpret what $b$ is: instead of our reward $r(s_t, a_t)$ we have
 $r(s_t, a_t) - b$, so we can think of $b$ as a baseline reward. In fact,
